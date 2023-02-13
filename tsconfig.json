@@ -27,7 +27,8 @@
     "jsdoc",
     "app",
     "package",
-    "tools"
+    "tools",
+    "templates"
   ],
   "include": ["**/*.ts"]
 }
