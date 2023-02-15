@@ -1,0 +1,5 @@
+# system files
+node_modules/
+
+dist/
+copy.err

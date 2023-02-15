@@ -5,37 +5,26 @@ import { Command } from "commander";
 import { engine } from "./engine.js";
 import { Utils } from "../utils/utility.js";
 const pkg = Utils.packageJson();
-// function collect(val: string, collection: string[]): string[] {
-//   collection.push(val);
-//   return collection;
-// }
 // add commands.
 const program = new Command();
 program
     .name(pkg.name)
     .version(pkg.version)
-    .description("Command-line interface for UIGTM application");
-// Setup uigtm in remote PC using uigtm project of this PC
+    .description(pkg.description);
+// Generate cli application project
 program
-    .command("setup")
-    .description("Setup uigtm in remote computer using uigtm settings of this computer")
-    .action((options) => engine.action("setup", options));
-// Export uigtm projects on this PC in json format
+    .command("generate")
+    .description("Generate cli application project")
+    .argument("<project-name>", "Project name")
+    .option("-y, --yes", "Generate project with default options")
+    .option("-p, --path <destination-path>", "Path where to generate cli project")
+    .action((project, options) => engine.action("generate", project, options));
 program
-    .command("export")
-    .description("Export uigtm projects and it's settings")
-    .action((options) => engine.action("export", options));
-// Import uigtm projects on this PC
-program
-    .command("import")
-    .description("Import uigtm projects and it's settings")
-    .action((options) => engine.action("import", options));
-// Remove uigtm projects on this PC
-program
-    .command("remove")
-    .description("Remove specified directories from uigtm projects")
-    // .option("-rs, --ref-system <refsystem>", "Reference system path for new UIGTM project")
-    .action((options) => engine.action("remove", options));
+    .command("command")
+    .description("Add new command with minimal structure")
+    .option("-p, --project", "Existing cli project path")
+    .option("-n, --mane", "New command name")
+    .action((options) => engine.action("command", options));
 export function parseProgram() {
     return (program.parse(process.argv));
 }

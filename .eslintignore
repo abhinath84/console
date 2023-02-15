@@ -1,8 +1,12 @@
 # system file/folder
-node_modules/
+node_modules/*
 
 # auto generated files
-app/
+app/*
 
 # misc
-jsdoc/
+jsdoc/*
+package/*
+
+#test
+test/*

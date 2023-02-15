@@ -3,10 +3,12 @@ function isBrowser() {
     return ((typeof window !== "undefined")
         && (Object.prototype.toString.call(window) === "[object Window]"));
 }
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 function isNode() {
     return ((typeof global !== "undefined")
         && (Object.prototype.toString.call(global) === "[object global]"));
 }
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 async function loadModule(filename) {
     if (isBrowser()) {
         return (import(filename));
@@ -36,7 +38,7 @@ async function loadModule(filename) {
     try {
         return require(filename); // eslint-disable-line global-require, import/no-dynamic-require
     }
-    catch (e) {
+    catch (e) { // eslint-disable-line @typescript-eslint/no-explicit-any
         if (((e.code === "ERR_REQUIRE_ESM"
             || (e instanceof SyntaxError
                 && e.message === "Cannot use import statement outside a module")))

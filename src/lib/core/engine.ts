@@ -7,33 +7,28 @@ import chalk from "chalk";
 import figlet from "figlet";
 import { Command } from "commander";
 
-import pack from "../../../package.json" assert {type: "json"};
-
 // import project related modules.
 import { parseProgram } from "./commands.js";
 import { Utils } from "../utils/utility.js";
 import { errorHandler } from "./errors.js";
 import { loadModule } from "../utils/esm.js";
 
-// const __filename = Utils.filename();
 const __dirname = Utils.dirname(import.meta.url);
-
 const cmdDirs = path.join(__dirname, "../cmd");
-
 const pkg = Utils.packageJson();
 
 interface Engine {
   isLoaded: boolean;
   readonly version: string;
-  [key: string]: any;
+  [key: string]: any; // eslint-disable-line @typescript-eslint/no-explicit-any
 }
 
-const api: any = {};
-const cli: any = {};
+const api: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+const cli: any = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
 
-// It makes sense to ensure that lounger was bootstrapped properly,
+// It makes sense to ensure that engine was bootstrapped properly,
 // especially for programmatic use.
-// To keep track of the async bootstrapping `status`, we set `lounger.loaded` to `false`.
+// To keep track of the async bootstrapping `status`, we set `engine.loaded` to `false`.
 export const engine: Engine = {
   isLoaded: false,
   version: Utils.packageJson().version,
@@ -48,6 +43,7 @@ function showFiglet() {
 }
 
 // TODO: replace value: any to value: Object|Function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function register(parent: any, child: any, cmd: string): void {
   if (Object.prototype.toString.call(child) === "[object Function]" || typeof child === "function") {
     parent[cmd] = child; // eslint-disable-line no-param-reassign
@@ -65,12 +61,10 @@ function loadCmds(files: string[]): Promise<boolean> {
     const jsFiles = files.filter((file) => file.match(/(.*)\.js$/));
 
     // load modules
-    const promises = jsFiles.map((jsFile) =>
-      loadModule(path.resolve(cmdDirs, jsFile)).then((module) => ({
-        cmd: jsFile.match(/(.*)\.js$/)![1],
-        mod: module,
-      }))
-    );
+    const promises = jsFiles.map((jsFile) => loadModule(path.resolve(cmdDirs, jsFile)).then((module) => ({
+      cmd: jsFile.match(/(.*)\.js$/)![1], // eslint-disable-line @typescript-eslint/no-non-null-assertion
+      mod: module,
+    })));
 
     return Promise.all(promises).then((responses) => {
       responses.forEach((response) => {
@@ -114,12 +108,13 @@ function parseCallback(): Command {
   return parseProgram();
 }
 
-function actionCallback(cmd: string, options: any): void {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function actionCallback(cmd: string, ...args: any[]): void {
   // showFiglet();
 
   // check
   if (cli[cmd]) {
-    cli[cmd].apply(null, [options]).catch(errorHandler);
+    cli[cmd].apply(null, [...args]).catch(errorHandler);
   } else {
     throw new TypeError(`${cmd} is not present in 'engine' module.`);
   }

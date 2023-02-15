@@ -28,7 +28,8 @@
     "app",
     "package",
     "tools",
-    "templates"
+    "src/templates",
+    "test"
   ],
   "include": ["**/*.ts"]
 }

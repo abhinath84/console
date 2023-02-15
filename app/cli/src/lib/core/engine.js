@@ -9,15 +9,14 @@ import { parseProgram } from "./commands.js";
 import { Utils } from "../utils/utility.js";
 import { errorHandler } from "./errors.js";
 import { loadModule } from "../utils/esm.js";
-// const __filename = Utils.filename();
 const __dirname = Utils.dirname(import.meta.url);
 const cmdDirs = path.join(__dirname, "../cmd");
 const pkg = Utils.packageJson();
-const api = {};
-const cli = {};
-// It makes sense to ensure that lounger was bootstrapped properly,
+const api = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+const cli = {}; // eslint-disable-line @typescript-eslint/no-explicit-any
+// It makes sense to ensure that engine was bootstrapped properly,
 // especially for programmatic use.
-// To keep track of the async bootstrapping `status`, we set `lounger.loaded` to `false`.
+// To keep track of the async bootstrapping `status`, we set `engine.loaded` to `false`.
 export const engine = {
     isLoaded: false,
     version: Utils.packageJson().version,
@@ -30,6 +29,7 @@ function showFiglet() {
     Utils.display("\n");
 }
 // TODO: replace value: any to value: Object|Function
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function register(parent, child, cmd) {
     if (Object.prototype.toString.call(child) === "[object Function]" || typeof child === "function") {
         parent[cmd] = child; // eslint-disable-line no-param-reassign
@@ -87,11 +87,12 @@ function parseCallback() {
     showFiglet();
     return parseProgram();
 }
-function actionCallback(cmd, options) {
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+function actionCallback(cmd, ...args) {
     // showFiglet();
     // check
     if (cli[cmd]) {
-        cli[cmd].apply(null, [options]).catch(errorHandler);
+        cli[cmd].apply(null, [...args]).catch(errorHandler);
     }
     else {
         throw new TypeError(`${cmd} is not present in 'engine' module.`);
