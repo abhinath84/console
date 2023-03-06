@@ -20,6 +20,7 @@ program
 // Generate cli application project
 program
   .command("generate")
+  .alias("gen")
   .description("Generate cli application project")
   .argument("<project-name>", "Project name")
   .option("-y, --yes", "Generate project with default options")
@@ -28,9 +29,9 @@ program
 
 program
   .command("command")
+  .alias("cmd")
   .description("Add new command with minimal structure")
-  .option("-p, --project", "Existing cli project path")
-  .option("-n, --mane", "New command name")
+  .option("--json", "command.json file path")
   .action((options) => engine.action("command", options));
 
 export function parseProgram() {

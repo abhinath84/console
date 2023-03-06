@@ -26,8 +26,30 @@ export namespace Commands {
 
   // eslint-disable-next-line @typescript-eslint/no-namespace
   export namespace Command {
+    export type Argument = {
+      name: string;
+      alias?: string;
+      description: string;
+      arguments: {
+        name: string;
+        description?: string;
+        defaultValue?: string | boolean | string[];
+      }[],
+      options: {
+        flags: string;
+        description?: string;
+        defaultValue?: string | boolean | string[];
+      }[],
+      action: string;
+      cmd: {
+        new: boolean;
+        file?: string;
+      }
+    };
+
     export type Input = {
-      json: string;
-    }
+      project: string;
+      commands: Argument[]
+    };
   }
 }

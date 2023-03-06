@@ -23,6 +23,9 @@ export class Generator {
         return (Promise.resolve());
     }
     async command(input) {
+        // validate existing project.
+        //  - folder structure (minimal & required)
+        //  - file structure (minimal & required)
         // parse core/commands.ts
         // append new command into this file
         // add [cli, api] methods in 'cmd/' existing file or new file.

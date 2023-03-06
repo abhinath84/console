@@ -33,7 +33,7 @@ function validateProjectName(name: string): boolean {
 }
 
 function validateVersion(version: string): boolean {
-  const pattern = /([0-9].[0-9].[0-9])/;
+  const pattern = /^[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}$/;
   return (pattern.test(version));
 }
 

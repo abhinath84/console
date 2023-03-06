@@ -23,7 +23,7 @@ function validateProjectName(name) {
     return (valid);
 }
 function validateVersion(version) {
-    const pattern = /([0-9].[0-9].[0-9])/;
+    const pattern = /^[0-9]{1,2}.[0-9]{1,2}.[0-9]{1,3}$/;
     return (pattern.test(version));
 }
 function validateHttpUrl(url) {

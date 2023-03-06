@@ -39,12 +39,17 @@ export class Generator {
   }
 
   async command(input: Commands.Command.Input): Promise<void> {
+    // validate existing project.
+    //  - folder structure (minimal & required)
+    //  - file structure (minimal & required)
+
     // parse core/commands.ts
     // append new command into this file
+    const newCommands = this.getNewCommands(input.commands);
 
     // add [cli, api] methods in 'cmd/' existing file or new file.
 
-    // add file in 'api' folder.
+    // add file in 'assist' folder.
 
     return (Promise.resolve());
   }
@@ -155,5 +160,15 @@ export class Generator {
     }
 
     throw (new Error("copy::Invalid input"));
+  }
+
+  private getNewCommands(commands: Commands.Command.Argument[]): string {
+    let newCommands = "";
+
+    commands.forEach(element => {
+      // use hbs to create this string.
+    });
+
+    return ("");
   }
 }
