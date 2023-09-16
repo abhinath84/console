@@ -1,24 +1,24 @@
 {
-  "name": "cli-builder",
+  "name": "console",
   "version": "1.0.8",
   "description": "Generate project to implement command-line interface application",
   "type": "module",
   "preferGlobal": true,
   "bin": {
-    "cli-builder": "./app/cli/src/bin/main.js"
+    "console": "./dist/bin/main.js"
   },
-  "main": "./app/cli/src/bin/main.js",
+  "main": "./dist/bin/main.js",
   "scripts": {
-    "start": "node --no-warnings=ExperimentalWarning ./app/cli/src/bin/main.js",
-    "prebuild": "rimraf ./app",
+    "start": "node --no-warnings=ExperimentalWarning ./dist/bin/main.js",
+    "prebuild": "rimraf ./dist",
     "build": "npx tsc -p ./tsconfig.json",
     "postbuild": "npm run templates:cp && npm run pkg:rma && npm run pkg:cp && npm run pkg:zip && npm run pkg:rm",
     "watch": "npx tsc -w -p ./tsconfig.json",
-    "templates:cp": "copyfiles package.json ./app/cli/ && copyfiles -a ./src/templates/**/* ./app/cli/",
+    "templates:cp": "copyfiles -a -u 1 ./src/templates/**/* ./dist",
     "pkg:rma": "rimraf ./package/",
     "pkg:rm": "cd ./package && rimraf app package.json package-lock.json",
     "pkg:cp": "copyfiles -a ./app/**/* ./package/",
-    "pkg:zip": "cd ./package && zip -r cli-builder.zip *",
+    "pkg:zip": "cd ./package && zip -r console.zip *",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint --fix .",
     "lint:gitlab": "set ESLINT_CODE_QUALITY_REPORT=eslint-gitlab-report.json && npx eslint --format gitlab .",

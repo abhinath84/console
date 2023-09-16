@@ -1,5 +1,4 @@
 # system files
 node_modules/
 
-package/
-copy.err
+dist/
