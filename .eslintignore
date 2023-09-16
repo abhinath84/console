@@ -2,11 +2,10 @@
 node_modules/*
 
 # auto generated files
-app/*
+dist/*
 
 # misc
-jsdoc/*
-package/*
+docs/*
 
 #test
 test/*

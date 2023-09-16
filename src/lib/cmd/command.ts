@@ -32,7 +32,7 @@ function validateName(name: string): boolean {
 }
 
 function validateProjectPath(path: string): boolean {
-  let status = false;
+  const status = false;
   // project path exists or not
   // project has write permission or not
 

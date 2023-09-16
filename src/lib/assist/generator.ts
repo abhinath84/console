@@ -12,7 +12,7 @@ export class Generator {
 
   constructor() {
     const __dirname = Utils.dirname(import.meta.url);
-    this.mTemplate = path.resolve(__dirname, "../../templates");
+    this.mTemplate = path.resolve(__dirname, "../../../templates");
 
     this.mGenerateInput = undefined;
   }
@@ -163,9 +163,9 @@ export class Generator {
   }
 
   private getNewCommands(commands: Commands.Command.Argument[]): string {
-    let newCommands = "";
+    const newCommands = "";
 
-    commands.forEach(element => {
+    commands.forEach((element) => {
       // use hbs to create this string.
     });
 

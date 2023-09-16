@@ -24,11 +24,9 @@
   },
   "exclude": [
     "node_modules",
-    "jsdoc",
-    "app",
-    "package",
+    "docs",
     "tools",
-    "src/templates",
+    "templates",
     "test"
   ],
   "include": ["**/*.ts"]

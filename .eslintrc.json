@@ -61,7 +61,9 @@
       ],
       "prefer-destructuring": "off",
       "max-classes-per-file": "off",
-      "no-use-before-define": ["error", { "functions": true, "classes": false, "variables": true }]
+      "no-use-before-define": ["error", { "functions": true, "classes": false, "variables": true }],
+      "no-shadow": "off",
+      "@typescript-eslint/no-shadow": "error"
   },
   "overrides": [
       {

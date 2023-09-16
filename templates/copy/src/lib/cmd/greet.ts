@@ -19,7 +19,7 @@ const api = async (input: GreetInput): Promise<string> => {
     throw new UsageError(`${errors.join("\n")}`);
   }
 
-  let greeting = `Hello ${input.name},\nThanks to choose cli-builder :)`;
+  let greeting = `Hello ${input.name},\nThanks to choose console :)`;
   if (input.note) {
     greeting += `\n\n${input.note}`;
   }

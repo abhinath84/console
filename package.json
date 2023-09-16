@@ -8,11 +8,16 @@
     "console": "./dist/bin/main.js"
   },
   "main": "./dist/bin/main.js",
+  "files": [
+    "dist/",
+    "templates/",
+    "README.md"
+  ],
   "scripts": {
     "start": "node --no-warnings=ExperimentalWarning ./dist/bin/main.js",
     "prebuild": "rimraf ./dist",
     "build": "npx tsc -p ./tsconfig.json",
-    "postbuild": "npm run templates:cp && npm run pkg:rma && npm run pkg:cp && npm run pkg:zip && npm run pkg:rm",
+    "postbuild": "",
     "watch": "npx tsc -w -p ./tsconfig.json",
     "templates:cp": "copyfiles -a -u 1 ./src/templates/**/* ./dist",
     "pkg:rma": "rimraf ./package/",
