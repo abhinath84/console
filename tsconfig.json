@@ -1,33 +1,9 @@
 {
-  "compileOnSave": false,
-  "compilerOptions": {
-    "module": "NodeNext",
-    "lib": ["es2020", "dom"],
-    "target": "es2020",
-    "rootDir": "./src",
-    "outDir": "./dist",
-    "strict": true,
-    "alwaysStrict": true,
-    "sourceMap": false,
-    "declaration": true,
-    "moduleResolution": "NodeNext",
-    "resolveJsonModule": true,
-    "esModuleInterop": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "importHelpers": true,
-    "skipLibCheck": true,
-    "skipDefaultLibCheck": true,
-    "baseUrl": ".",
-    "paths": {
-    }
-  },
-  "exclude": [
-    "node_modules",
-    "docs",
-    "tools",
-    "templates",
-    "test"
-  ],
-  "include": ["**/*.ts"]
+  "files": [],
+  "references": [
+    { "path": "packages/lib/validation" },
+    { "path": "packages/lib/utils" },
+    { "path": "packages/lib/node" },
+    { "path": "packages/app" },
+  ]
 }

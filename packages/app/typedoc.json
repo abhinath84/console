@@ -1,0 +1,7 @@
+{
+  "extends": ["../../typedoc.base.json"],
+  "entryPoints": [
+    "./src/bin/main.ts",
+    "./src/lib/core/engine.ts",
+  ]
+}

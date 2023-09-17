@@ -2,10 +2,7 @@
 node_modules/*
 
 # auto generated files
-dist/*
+**/dist/*
 
 # misc
-docs/*
-
-#test
-test/*
+to-be-deleted/

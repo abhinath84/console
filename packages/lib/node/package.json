@@ -1,0 +1,33 @@
+{
+  "name": "@console/node",
+  "version": "1.0.0",
+  "description": "creo-saas backend api load, performance testing",
+  "type": "module",
+  "exports": {
+    ".": "./dist/mod.js",
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist/"
+  ],
+  "scripts": {
+    "prebuild": "npm run clear:build",
+    "build": "npx tsc -p ./tsconfig.json",
+    "postbuild": "",
+    "lint": "npx eslint --max-warnings 0 .",
+    "lint:fix": "npx eslint --max-warnings 0 --fix .",
+    "lint:gitlab": "set ESLINT_CODE_QUALITY_REPORT=eslint-gitlab-report.json && npx eslint --max-warnings 0 --format gitlab .",
+    "clear:npm": "npx rimraf ./node_modules",
+    "clear:build": "npx rimraf ./dist",
+    "cp:package": "npx copyfiles ./package.json ./dist",
+    "docs:api": "npx typedoc --readme none --out ./docs/api/html",
+    "docs:api:md": "npx typedoc --plugin typedoc-plugin-markdown --readme none --out ./docs/api/md"
+  },
+  "private": true,
+  "bugs": {
+    "url": "https://gitlab.rd-services.aws.ptc.com/cc/creo/creo-saas-backing-services-poc/-/issues"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC"
+}

@@ -1,0 +1,54 @@
+{
+  "name": "console",
+  "version": "1.1.0",
+  "description": "Generate project to implement command-line interface application",
+  "type": "module",
+  "preferGlobal": true,
+  "bin": {
+    "console": "./dist/bin/main.js"
+  },
+  "main": "./dist/bin/main.js",
+  "files": [
+    "dist/",
+    "templates/",
+    "README.md"
+  ],
+  "scripts": {
+    "start": "node --no-warnings=ExperimentalWarning ./dist/bin/main.js",
+    "prebuild": "npm run clear:build",
+    "build": "npx tsc -p ./tsconfig.json",
+    "postbuild": "",
+    "watch": "npx tsc -w -p ./tsconfig.json",
+    "lint": "npx eslint .",
+    "lint:fix": "npx eslint --fix .",
+    "lint:gitlab": "set ESLINT_CODE_QUALITY_REPORT=eslint-gitlab-report.json && npx eslint --format gitlab .",
+    "clear:npm": "npx rimraf ./node_modules",
+    "clear:build": "npx rimraf ./dist",
+    "docs": "jsdoc -p -c ./jsdoc/config.json",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "@console/node": "^1.0.0",
+    "@console/utils": "^1.0.0",
+    "@console/validation": "^1.0.0",
+    "chalk": "^5.3.0",
+    "commander": "^11.0.0",
+    "figlet": "^1.6.0",
+    "fs-extra": "^11.1.1",
+    "hbs": "^4.2.0",
+    "inquirer": "^9.2.11",
+    "is-url-http": "^2.3.6",
+    "npmlog": "^7.0.1",
+    "spdx-expression-validate": "^2.0.0"
+  },
+  "bugs": {
+    "url": "https://github.com/abhinath84/console/issues/new"
+  },
+  "keywords": [
+    "cli",
+    "node",
+    "commander"
+  ],
+  "author": "Abhishek Nath",
+  "license": "MIT"
+}
