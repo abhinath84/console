@@ -49,6 +49,18 @@ export function readable(pathname: string): boolean {
   return accessible(pathname, fs.constants.R_OK);
 }
 
+export function validate(dir: string): boolean {
+  let state = false;
+
+  if (dir.length > 0) {
+    // eslint-disable-next-line no-useless-escape
+    const pass = dir.match(/^(?:[\w]\:|\\)(\\[a-z|A-Z_\-\s0-9\.]+)+$/gm);
+    if (pass) state = true;
+  }
+
+  return state;
+}
+
 export function exists(pathname: string): boolean {
   return (fs.existsSync(pathname));
 }

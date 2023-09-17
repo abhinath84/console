@@ -3,14 +3,14 @@ import path from "path";
 import chalk from "chalk";
 import figlet from "figlet";
 import { Command } from "commander";
+import { esm } from "@console/node";
+import { Is, AnyFunction } from "@console/validation";
 
 // import project related modules.
 // eslint-disable-next-line import/no-cycle
 import { parseProgram } from "./commands.js";
 import { Utils } from "../utils/utility.js";
 import { errorHandler } from "./errors.js";
-import { esm } from "../node/mod.js";
-import { Is, AnyFunction } from "../validation/mod.js";
 
 const __dirname = Utils.dirname(import.meta.url);
 const cmdDirs = path.join(__dirname, "../cmd");
