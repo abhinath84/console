@@ -2,13 +2,57 @@ import path from "path";
 import fse from "fs-extra";
 import * as fsp from "fs/promises";
 
-import { Commands } from "../core/defs.js";
 import { Utils } from "../utils/utility.js";
+
+export type GenerateInput = {
+  path: string;
+  package: {
+    name: string;
+    version: string;
+    description: string;
+    command: string;
+    repository: {
+      type: string;
+      url: string;
+    };
+    bugs: {
+      url: string;
+    }
+    author: string;
+    license: string;
+  };
+};
+
+export type CommandArgument = {
+  name: string;
+  alias?: string;
+  description: string;
+  arguments: {
+    name: string;
+    description?: string;
+    defaultValue?: string | boolean | string[];
+  }[],
+  options: {
+    flags: string;
+    description?: string;
+    defaultValue?: string | boolean | string[];
+  }[],
+  action: string;
+  cmd: {
+    new: boolean;
+    file?: string;
+  }
+};
+
+export type CommandInput = {
+  project: string;
+  commands: CommandArgument[]
+};
 
 export class Generator {
   private mTemplate: string;
 
-  private mGenerateInput: Commands.Generate.Input | undefined;
+  private mGenerateInput: GenerateInput | undefined;
 
   constructor() {
     const __dirname = Utils.dirname(import.meta.url);
@@ -17,7 +61,7 @@ export class Generator {
     this.mGenerateInput = undefined;
   }
 
-  async generate(input: Commands.Generate.Input): Promise<void> {
+  async generate(input: GenerateInput): Promise<void> {
     this.mGenerateInput = input;
 
     Utils.display("");
@@ -38,7 +82,7 @@ export class Generator {
     return (Promise.resolve());
   }
 
-  async command(input: Commands.Command.Input): Promise<void> {
+  async command(input: CommandInput): Promise<void> {
     // validate existing project.
     //  - folder structure (minimal & required)
     //  - file structure (minimal & required)
@@ -162,7 +206,7 @@ export class Generator {
     throw (new Error("copy::Invalid input"));
   }
 
-  private getNewCommands(commands: Commands.Command.Argument[]): string {
+  private getNewCommands(commands: CommandArgument[]): string {
     const newCommands = "";
 
     commands.forEach((element) => {

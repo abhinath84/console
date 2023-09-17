@@ -4,10 +4,10 @@ import inquirer, { QuestionCollection } from "inquirer";
 // import isValidSPDX from "spdx-expression-validate";
 // import isUrlHttp from "is-url-http";
 
-import { Commands } from "../core/defs.js";
+// import { Commands } from "../core/defs.js";
 import { UsageError } from "../core/errors.js";
 import { Utils } from "../utils/utility.js";
-import { Generator } from "../assist/generator.js";
+import { GenerateInput, Generator } from "../assist/generator.js";
 
 const isValidSPDX = Utils.require("spdx-expression-validate");
 
@@ -56,7 +56,7 @@ function validateLicense(name: string): boolean {
   return (isValidSPDX(name));
 }
 
-function validateOption(input: Commands.Generate.Input): string[] {
+function validateOption(input: GenerateInput): string[] {
   const msgs: string[] = [];
 
   // validate project name
@@ -260,7 +260,7 @@ function shouldRemoveDestination(destination: string) {
   );
 }
 
-function verify(input: Commands.Generate.Input) {
+function verify(input: GenerateInput) {
   Utils.display("");
   Utils.display(JSON.stringify(input, null, 2));
   Utils.display("");
@@ -277,7 +277,7 @@ function verify(input: Commands.Generate.Input) {
   return inquirer.prompt(questions);
 }
 
-const defaultInput: Commands.Generate.Input = {
+const defaultInput: GenerateInput = {
   path: process.cwd(),
   package: {
     name: "",
@@ -296,7 +296,7 @@ const defaultInput: Commands.Generate.Input = {
   },
 };
 
-const api = async (input: Commands.Generate.Input): Promise<boolean> => {
+const api = async (input: GenerateInput): Promise<boolean> => {
   const errors = validateOption(input);
   if (errors.length > 0) {
     throw new UsageError(`${errors.join("\n")}`);
@@ -309,7 +309,7 @@ const api = async (input: Commands.Generate.Input): Promise<boolean> => {
 };
 
 const cli = async (project: string, options: { yes: boolean, path: string }): Promise<boolean> => {
-  const input: Commands.Generate.Input = defaultInput;
+  const input: GenerateInput = defaultInput;
 
   // specify project path
   if (options.path) {

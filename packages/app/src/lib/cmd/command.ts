@@ -5,10 +5,10 @@ import inquirer, { QuestionCollection } from "inquirer";
 // import { parse } from "@babel/parser";
 // import generate from "@babel/generator";
 
-import { Commands } from "../core/defs.js";
+// import { Commands } from "../core/defs.js";
 import { UsageError } from "../core/errors.js";
 import { Utils } from "../utils/utility.js";
-import { Generator } from "../assist/generator.js";
+import { CommandInput, Generator } from "../assist/generator.js";
 
 function validateName(name: string): boolean {
   let valid = false;
@@ -39,7 +39,7 @@ function validateProjectPath(path: string): boolean {
   return (status);
 }
 
-function validateInput(input: Commands.Command.Input): string[] {
+function validateInput(input: CommandInput): string[] {
   const msgs: string[] = [];
 
   // validate project name
@@ -212,7 +212,7 @@ type InputQuestion = {
 //   }
 // };
 
-const api = async (input: Commands.Command.Input): Promise<boolean> => {
+const api = async (input: CommandInput): Promise<boolean> => {
   const errors = validateInput(input);
   if (errors.length > 0) {
     throw new UsageError(`${errors.join("\n")}`);
@@ -231,7 +231,7 @@ const cli = async (json: string): Promise<boolean> => {
     throw new UsageError(`${errors.join("\n")}`);
   }
 
-  // const input: Commands.Command.Input = {
+  // const input: CommandInput = {
   //   name: "",
   //   json: ""
   // };
