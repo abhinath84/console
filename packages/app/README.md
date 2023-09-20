@@ -1,7 +1,3 @@
-| NOTE:            |
-| :--------------- |
-| Work in progress |
-
 <div align="center">
   <h1>CONSOLE</h1>
 </div>

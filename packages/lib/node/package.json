@@ -1,12 +1,13 @@
 {
-  "name": "@console/node",
+  "name": "@typesys/node",
   "version": "1.0.0",
-  "description": "creo-saas backend api load, performance testing",
+  "description": "",
   "type": "module",
   "exports": {
     ".": "./dist/mod.js",
     "./package.json": "./package.json"
   },
+  "types": "./dist/mod.d.ts",
   "files": [
     "dist/"
   ],
@@ -23,9 +24,8 @@
     "docs:api": "npx typedoc --readme none --out ./docs/api/html",
     "docs:api:md": "npx typedoc --plugin typedoc-plugin-markdown --readme none --out ./docs/api/md"
   },
-  "private": true,
   "bugs": {
-    "url": "https://gitlab.rd-services.aws.ptc.com/cc/creo/creo-saas-backing-services-poc/-/issues"
+    "url": "https://github.com/abhinath84/console/issues/new"
   },
   "keywords": [],
   "author": "",

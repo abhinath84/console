@@ -1,10 +1,11 @@
 import path from "path";
 import { access, constants } from "fs/promises";
 import inquirer, { QuestionCollection } from "inquirer";
-// import isValidSPDX from "spdx-expression-validate";
-// import isUrlHttp from "is-url-http";
+import chalk from "chalk";
+import {
+  exists, writable, writeLine
+} from "@typesys/node";
 
-// import { Commands } from "../core/defs.js";
 import { UsageError } from "../core/errors.js";
 import { Utils } from "../utils/utility.js";
 import { GenerateInput, Generator } from "../assist/generator.js";
@@ -122,7 +123,7 @@ function ask(project: string) {
   //   }
   // },
 
-  Utils.display("");
+  writeLine("");
 
   const questions: QuestionCollection<InputQuestion> = [
     {
@@ -241,7 +242,7 @@ function shouldRemoveDestination(destination: string) {
   return (access(destination, constants.R_OK | constants.W_OK)
     .then(() => {
       // ask for removal
-      Utils.display("");
+      writeLine("");
       const questions: QuestionCollection<{ ok: boolean }> = [
         {
           type: "confirm",
@@ -261,9 +262,9 @@ function shouldRemoveDestination(destination: string) {
 }
 
 function verify(input: GenerateInput) {
-  Utils.display("");
-  Utils.display(JSON.stringify(input, null, 2));
-  Utils.display("");
+  writeLine("");
+  writeLine(JSON.stringify(input, null, 2));
+  writeLine("");
 
   const questions: QuestionCollection<{ ok: boolean }> = [
     {
@@ -277,30 +278,9 @@ function verify(input: GenerateInput) {
   return inquirer.prompt(questions);
 }
 
-const defaultInput: GenerateInput = {
-  path: process.cwd(),
-  package: {
-    name: "",
-    version: "1.0.0",
-    description: "",
-    command: "",
-    repository: {
-      type: "git",
-      url: "",
-    },
-    bugs: {
-      url: "",
-    },
-    author: "",
-    license: "ISC",
-  },
-};
-
 const api = async (input: GenerateInput): Promise<boolean> => {
   const errors = validateOption(input);
-  if (errors.length > 0) {
-    throw new UsageError(`${errors.join("\n")}`);
-  }
+  if (errors.length > 0) throw new UsageError(`${errors.join("\n")}`);
 
   const generator = new Generator();
   await generator.generate(input);
@@ -308,8 +288,39 @@ const api = async (input: GenerateInput): Promise<boolean> => {
   return (Promise.resolve(true));
 };
 
-const cli = async (project: string, options: { yes: boolean, path: string }): Promise<boolean> => {
-  const input: GenerateInput = defaultInput;
+const cli = async (name: string, options: { yes: boolean, path: string }): Promise<boolean> => {
+  if (options.path) {
+    if (!exists(options.path)) {
+      throw (new UsageError(`Directory '${options.path}' mentioned in --path option doesn't exists`));
+    }
+
+    if (!writable(options.path)) {
+      throw (new UsageError(`Directory '${options.path}' mentioned in --path option isn't writable.`));
+    }
+  }
+
+  const input: GenerateInput = {
+    path: options.path || process.cwd(),
+    config: {
+      npm: true,
+      git: true
+    },
+    package: {
+      name: "",
+      version: "1.0.0",
+      description: "",
+      command: "",
+      repository: {
+        type: "git",
+        url: "",
+      },
+      bugs: {
+        url: "",
+      },
+      author: "",
+      license: "ISC",
+    },
+  };
 
   // specify project path
   if (options.path) {
@@ -318,19 +329,19 @@ const cli = async (project: string, options: { yes: boolean, path: string }): Pr
 
   try {
     // ask permission to delete existing project folder.
-    const dest = path.join(input.path, project);
+    const dest = path.join(input.path, name);
     const should = await shouldRemoveDestination(dest);
     if (should) {
       if (options.yes) {
-        input.package.name = project;
-        input.package.command = project;
+        input.package.name = name;
+        input.package.command = name;
       } else {
         // ask for the user input
-        const answers = await ask(project);
+        const answers = await ask(name);
 
         // fill input by user's answers
         // input.package.name = answers.package_name;
-        input.package.name = project;
+        input.package.name = name;
         input.package.version = answers.package_version;
         input.package.description = answers.package_description;
         input.package.command = answers.package_command;
@@ -343,21 +354,24 @@ const cli = async (project: string, options: { yes: boolean, path: string }): Pr
       // verify user input
       const answer = await verify(input);
       if (!answer.ok) {
-        Utils.display("Aborted !!!");
+        writeLine("");
+        writeLine("🛑 Aborted 🛑");
 
         return (Promise.resolve(false));
       }
 
       // call api to generate project
-      Utils.display("");
-      Utils.display("Started ...");
+      // writeLine("");
+      // writeLine("Started ...");
       const response = await api(input);
-      Utils.display("Completed ...");
+      writeLine("");
+      writeLine(`${chalk.green("√")} '${name}' workspace created successfully.`);
 
       return (response);
     }
 
-    Utils.display("Aborted!");
+    writeLine("");
+    writeLine("🛑 Aborted 🛑");
     return (Promise.resolve(false));
   } catch (err) {
     return (Promise.reject(err));

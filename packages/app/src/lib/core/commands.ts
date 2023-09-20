@@ -20,10 +20,16 @@ program
   .command("generate")
   .alias("gen")
   .description("Generate cli application project")
-  .argument("<project-name>", "Project name")
-  .option("-y, --yes", "Generate project with default options")
-  .option("-p, --path <destination-path>", "Path where to generate cli project")
-  .action((project, options) => engine.action("generate", project, options));
+  .argument("<ame>", "Project name")
+  .option(
+    "-y, --yes",
+    "Generate project with default options. [boolean][Default: true]"
+  )
+  .option(
+    "-p, --path <directory>",
+    "The directory name to create the workspace in. [string][Default: working directory]"
+  )
+  .action((name, options) => engine.action("generate", name, options));
 
 program
   .command("command")

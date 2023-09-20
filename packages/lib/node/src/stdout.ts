@@ -1,19 +1,19 @@
-export function write(buffer: string) {
+export function write(buffer: string | Uint8Array) {
   process.stdout.write(buffer);
 }
 
-export function overwrite(buffer: string) {
+export function overwrite(buffer: string | Uint8Array) {
   process.stdout.write("\r"); // move cursor at the start of the line
   process.stdout.clearLine(0);
   process.stdout.write(buffer);
 }
 
-export function writeLine(buffer: string) {
+export function writeLine(buffer: string | Uint8Array) {
   process.stdout.write(buffer);
   process.stdout.write("\n");
 }
 
-export function overwriteLine(buffer: string) {
+export function overwriteLine(buffer: string | Uint8Array) {
   process.stdout.write("\r"); // move cursor at the start of the line
   process.stdout.clearLine(0);
   process.stdout.write(buffer);

@@ -1,11 +1,36 @@
 import path from "path";
-import fse from "fs-extra";
+import { statSync } from "fs";
 import * as fsp from "fs/promises";
+import chalk from "chalk";
+import {
+  FileInfo,
+  esm,
+  exists,
+  copy,
+  files,
+  writeLine,
+  overwriteLine,
+  clearLine,
+  display,
+  spawnAsync,
+  Spinner,
+  Frames,
+  Colors
+} from "@typesys/node";
+import { TObject, Assert } from "@typesys/validation";
 
 import { Utils } from "../utils/utility.js";
+import { UsageError } from "../core/errors.js";
+import * as Handlebars from "../utils/handlebars.js";
+
+const __dirname = Utils.dirname(import.meta.url);
 
 export type GenerateInput = {
   path: string;
+  config: {
+    npm: boolean;
+    git: boolean;
+  };
   package: {
     name: string;
     version: string;
@@ -50,36 +75,37 @@ export type CommandInput = {
 };
 
 export class Generator {
-  private mTemplate: string;
+  #template: string;
 
-  private mGenerateInput: GenerateInput | undefined;
+  #templateConfig: TObject | undefined;
+
+  #generateInput: GenerateInput | undefined;
 
   constructor() {
-    const __dirname = Utils.dirname(import.meta.url);
-    this.mTemplate = path.resolve(__dirname, "../../../templates");
-
-    this.mGenerateInput = undefined;
+    this.#template = path.resolve(__dirname, "../../../templates");
+    this.#templateConfig = undefined;
+    this.#generateInput = undefined;
   }
 
   async generate(input: GenerateInput): Promise<void> {
-    this.mGenerateInput = input;
+    this.#generateInput = input;
 
-    Utils.display("");
+    this.#templateConfig = await this.#config();
 
     // remove destination directory if exists
-    await this.rmDest();
+    await this.#remove();
 
     // copy items from ./templates/copy/* to 'input.path + input.name'.
-    Utils.display("Building structure ...");
-    await this.copy();
+    await this.#copy();
 
-    // generate package.json
-    Utils.display("Generating package.json ...");
-    await this.packageJson();
+    // hbs folder handle
+    await this.#hbs();
 
-    Utils.display("");
+    // do npm install
+    await this.#npm();
 
-    return (Promise.resolve());
+    // git related stuff
+    await this.#gitInit();
   }
 
   async command(input: CommandInput): Promise<void> {
@@ -98,112 +124,324 @@ export class Generator {
     return (Promise.resolve());
   }
 
-  private async rmDest(): Promise<void> {
-    if (this.mGenerateInput) {
-      const dest = path.join(this.mGenerateInput.path, this.mGenerateInput.package.name);
-      if (fse.existsSync(dest)) {
-        Utils.display("Removing destination directory ...");
+  async #config() {
+    const dest = path.join(this.#template, "config.js");
+    if (exists(dest)) {
+      return (esm.load(dest));
+    }
+    return (undefined);
+  }
+
+  async #remove(): Promise<void> {
+    Assert.defined(this.#generateInput, "Generator::#remove : Invalid input handler");
+
+    try {
+      const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
+      if (exists(dest)) {
+        const spinner = new Spinner(
+          Frames.arc,
+          Colors.red,
+          `${chalk.red("REMOVING")} existing destination directory`
+        );
+        spinner.start();
 
         const options = { recursive: true, force: true };
-        return (fsp.rm(dest, options));
+        await fsp.rm(dest, options);
+
+        spinner.stop();
+        overwriteLine(`${chalk.red("REMOVE")} existing destination directory`);
       }
 
       return (Promise.resolve());
+    } catch (err) {
+      clearLine();
+      throw (new UsageError((<Error>err).message));
     }
-
-    throw (new Error("Generator::rmDest : Invalid input handler"));
   }
 
-  private async copy(): Promise<void> {
-    if (this.mGenerateInput) {
-      const src = path.join(this.mTemplate, "copy");
-      const dest = path.join(this.mGenerateInput.path, this.mGenerateInput.package.name);
+  async #copy(): Promise<void> {
+    Assert.defined(this.#generateInput, "Generator::#copy : Invalid input handler");
 
-      await fse.access(path.dirname(dest), fse.constants.R_OK);
-      await fse.copy(src, dest);
+    const src = path.join(this.#template, "copy");
+    const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
+
+    // await fse.access(path.dirname(dest), fse.constants.R_OK);
+    // await fse.copy(src, dest);
+
+    const fileCopyCB = (source: string, destination: string, error: Error | null): void => {
+      this.#writeCreateMsg(destination);
+    };
+    await copy(src, dest, fileCopyCB);
+
+    return (Promise.resolve());
+  }
+
+  async #hbs(): Promise<void> {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+
+    const src = path.join(this.#template, "hbs");
+    // const dest = path.join(this.#generateInput.path, this.#generateInput.name);
+
+    // // collect all files under 'hbs' directory in an array format.
+    const fileList = await files(src, { recursive: true });
+
+    // create destination file out of them.
+    const promises = fileList.map((file) => this.#compile(file));
+    await Promise.all(promises);
+
+    return (Promise.resolve());
+  }
+
+  async #npm(): Promise<void> {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+
+    const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
+    const packageFile = path.join(dest, "package.json");
+
+    Assert.ok(exists(packageFile), "package.json file doesn't exists");
+
+    if (this.#generateInput.config.npm) return (this.#npmInstall());
+    return (this.#npmWrite());
+  }
+
+  async #gitInit(): Promise<void> {
+    Assert.defined(this.#generateInput, "Generator::#gitInit::Invalid input");
+
+    if (this.#generateInput.config.git) {
+      const spinner = new Spinner(Frames.arc, Colors.cyan, "Initializing git...");
+      spinner.start();
+
+      try {
+        const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
+        await spawnAsync("git", ["init"], { cwd: dest });
+
+        // overwrite(`Initializing git...`);(`Adding file contents to the index in git...`);
+        await spawnAsync("git", ["add", "--all"], { cwd: dest });
+
+        // overwrite(`Committing changes to the repository in git...`);
+        const { stderr } = await spawnAsync("git", ["commit", "-am", "Initial Commit"], { cwd: dest });
+        spinner.stop();
+        if (stderr.length > 0) display(stderr);
+        overwriteLine(`${chalk.cyan("√")} Successfully initialized git.`);
+      } catch (err) {
+        spinner.stop();
+        clearLine();
+        display(err);
+        overwriteLine(`${chalk.red("X")} Git initialization Failed.`);
+
+        return (Promise.resolve());
+      }
+    }
+
+    return (Promise.resolve());
+  }
+
+  async #compile(file: FileInfo) {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+    Assert.ok(Generator.#validateHbsExtension(file.name), "Generator::Invalid Handlebars file");
+
+    // compile with current inputs
+    const src = path.join(file.path, file.name);
+    const content = await Handlebars.compile(src, this.#generateInput);
+
+    // write compiled content on destination file
+    const pos = file.path.indexOf("hbs");
+    const restPath = file.path.substring(pos + 3);
+    const destDir = path.join(this.#generateInput.path, restPath, this.#generateInput.package.name);
+    const destFile = file.name.substring(0, (file.name.lastIndexOf(".")));
+    const dest = path.join(destDir, destFile);
+
+    await fsp.writeFile(dest, content);
+    this.#writeCreateMsg(dest);
+
+    return (Promise.resolve());
+  }
+
+  static #validateHbsExtension(fileName: string): boolean {
+    const split = fileName.split(".");
+    if ((split.length > 2) && (split[split.length - 1].toLocaleLowerCase() === "hbs")) {
+      return (true);
+    }
+
+    return (false);
+  }
+
+  #writeCreateMsg(destination: string) {
+    const destFileStat = statSync(destination);
+    const finalDest = destination.substring(this.#generateInput!.path.length);
+
+    writeLine(`${chalk.green("CREATE")} ${finalDest} (${destFileStat.size} bytes)`);
+  }
+
+  async #npmInstall() {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+    Assert.defined(this.#templateConfig, "Generator::Invalid template config handler");
+
+    const spinner = new Spinner(Frames.arc, Colors.cyan, "Installing Packages(npm)...");
+    spinner.start();
+
+    try {
+      if (this.#templateConfig.install) {
+        await this.#npmInstallDependencies();
+        await this.#npmInstallDevDependencies();
+
+        spinner.stop();
+        overwriteLine(`${chalk.cyan("√")} Packages Installed Successfully.`);
+
+        return (Promise.resolve());
+      }
+
+      // Install npm packages which are already mentioned in package.json,
+      // if config.js doesn't contain any install package information
+      const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
+      await spawnAsync("npm.cmd", ["install", "--legacy-peer-deps"], { cwd: dest });
+
+      spinner.stop();
+      overwriteLine(`${chalk.cyan("√")} Packages Installed Successfully.`);
+
+      return (Promise.resolve());
+    } catch (err) {
+      spinner.stop();
+      clearLine();
+      console.log(err);
+      overwriteLine(`${chalk.red("X")} Packages Installation Failed.`);
 
       return (Promise.resolve());
     }
-
-    throw (new Error("copy::Invalid input"));
   }
 
-  private async packageJson(): Promise<void> {
-    if (this.mGenerateInput) {
-      const dest = path.join(this.mGenerateInput.path, this.mGenerateInput.package.name);
-      const filename = path.join(dest, "package.json");
+  async #npmInstallDependencies() {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+    Assert.defined(this.#templateConfig, "Generator::Invalid template config handler");
 
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const data: any = {
-        name: this.mGenerateInput.package.name,
-        version: this.mGenerateInput.package.version,
-        description: this.mGenerateInput.package.description,
-        type: "module",
-        preferGlobal: true,
-        bin: {
-        },
-        main: "./dist/src/bin/main.js",
-        scripts: {
-          start: "node --no-warnings=ExperimentalWarning ./dist/src/bin/main.js",
-          prebuild: "rimraf ./dist",
-          build: "npx tsc -p ./tsconfig.json",
-          postbuild: "copyfiles ./package.json ./dist/",
-          watch: "npx tsc -w -p ./tsconfig.json",
-          lint: "npx eslint .",
-          "lint:fix": "npx eslint --fix .",
-          "lint:gitlab": "set ESLINT_CODE_QUALITY_REPORT=eslint-gitlab-report.json && npx eslint --format gitlab .",
-          docs: "jsdoc -p -c ./jsdoc/config.json",
-          test: "echo \"Error: no test specified\" && exit 1",
-        },
-        dependencies: {
-          chalk: "^5.2.0",
-          commander: "^10.0.0",
-          figlet: "^1.5.2",
-          inquirer: "^9.1.4",
-          npmlog: "^7.0.1",
-        },
-        devDependencies: {
-          "@types/figlet": "^1.5.5",
-          "@types/inquirer": "^9.0.3",
-          "@types/node": "^18.13.0",
-          "@types/npmlog": "^4.1.4",
-          "@typescript-eslint/eslint-plugin": "^5.51.0",
-          "@typescript-eslint/parser": "^5.51.0",
-          copyfiles: "^2.4.1",
-          eslint: "^8.34.0",
-          "eslint-config-airbnb-base": "^15.0.0",
-          "eslint-formatter-gitlab": "^4.0.0",
-          "eslint-plugin-import": "^2.27.5",
-          tslib: "^2.5.0",
-          typescript: "^4.9.5",
-        },
-        bugs: {
-          url: this.mGenerateInput.package.bugs.url,
-        },
-        keywords: [
-          "cli",
-          "node",
-          "commander",
+    if (this.#templateConfig.install.dependencies) {
+      const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
+      return (spawnAsync(
+        "npm.cmd",
+        [
+          "install",
+          "--legacy-peer-deps",
+          ...this.#templateConfig.install.dependencies
         ],
-        author: this.mGenerateInput.package.author,
-        license: this.mGenerateInput.package.license,
-      };
+        { cwd: dest }
+      ));
+    }
 
-      data.bin[this.mGenerateInput.package.command] = "./dist/src/bin/main.js";
-      if (this.mGenerateInput.package.repository.url.length > 0) {
-        data.repository = {
-          type: this.mGenerateInput.package.repository.type,
-          url: this.mGenerateInput.package.repository.url,
-        };
+    return (Promise.resolve({ stdout: "", stderr: "" }));
+  }
+
+  async #npmInstallDevDependencies() {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+    Assert.defined(this.#templateConfig, "Generator::Invalid template config handler");
+
+    if (this.#templateConfig.install.devDependencies) {
+      const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
+      return (spawnAsync(
+        "npm.cmd",
+        [
+          "install",
+          "--legacy-peer-deps",
+          "--save-dev",
+          ...this.#templateConfig.install.devDependencies
+        ],
+        { cwd: dest }
+      ));
+    }
+
+    return (Promise.resolve({ stdout: "", stderr: "" }));
+  }
+
+  async #npmWrite() {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+    Assert.defined(this.#templateConfig, "Generator::Invalid template config handler");
+
+    const spinner = new Spinner(Frames.arc, Colors.cyan, "Installing Packages(npm)...");
+    spinner.start();
+
+    try {
+      if (this.#templateConfig.install) {
+        const dependencies = await this.npmDependencies();
+        const devDependencies = await this.npmDevDependencies();
+
+        // read/write package.js file
+        const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
+        const packageFile = path.join(dest, "package.json");
+        const json = await esm.load(packageFile);
+
+        json.dependencies = dependencies;
+        json.devDependencies = devDependencies;
+
+        await fsp.writeFile(packageFile, JSON.stringify(json, null, 2));
       }
 
-      await fse.access(dest, fse.constants.R_OK);
-      await fse.outputJson(filename, data, { spaces: 2 });
+      spinner.stop();
+      overwriteLine(`${chalk.cyan("√")} Packages Installed Successfully.`);
+      return (Promise.resolve());
+    } catch (err) {
+      spinner.stop();
+      clearLine();
+      console.log(err);
+      overwriteLine(`${chalk.red("X")} Packages Installation Failed.`);
 
       return (Promise.resolve());
     }
+  }
 
-    throw (new Error("copy::Invalid input"));
+  async npmDependencies() {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+    Assert.defined(this.#templateConfig, "Generator::Invalid template config handler");
+
+    if (this.#templateConfig.install.dependencies) {
+      const promises = this.#templateConfig.install.dependencies.map((pkg: string) => (Generator.#npmVersion(pkg)));
+
+      let obj = {};
+      const responses = await Promise.all(promises);
+      responses.forEach((response) => {
+        obj = Object.assign(obj, response);
+      });
+
+      return (obj);
+    }
+
+    return (Promise.resolve({}));
+  }
+
+  async npmDevDependencies() {
+    Assert.defined(this.#generateInput, "Generator::Invalid input handler");
+    Assert.defined(this.#templateConfig, "Generator::Invalid template config handler");
+
+    if (this.#templateConfig.install.devDependencies) {
+      const promises = this.#templateConfig.install.devDependencies.map((pkg: string) => (Generator.#npmVersion(pkg)));
+
+      let obj = {};
+      const responses = await Promise.all(promises);
+      responses.forEach((response) => {
+        obj = Object.assign(obj, response);
+      });
+
+      return (obj);
+    }
+
+    return (Promise.resolve({}));
+  }
+
+  static async #npmVersion(pkg: string): Promise<{[key: string]: string}> {
+    const split = pkg.split("@");
+    if ((split.length === 2) && (split[0].length > 0) && (split[1].length > 0)) {
+      const obj: {[key: string]: string} = {};
+      obj[split[0]] = `^${split[1]}`;
+
+      return (obj);
+    }
+
+    const { stdout } = await spawnAsync("npm.cmd", ["view", pkg, "version"]);
+    const stdoutStr = stdout.toString();
+    const version = stdoutStr.substring(0, stdoutStr.indexOf("\n"));
+
+    const obj: {[key: string]: string} = {};
+    obj[pkg] = `^${version}`;
+
+    return (obj);
   }
 
   private getNewCommands(commands: CommandArgument[]): string {

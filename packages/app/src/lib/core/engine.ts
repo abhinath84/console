@@ -3,8 +3,8 @@ import path from "path";
 import chalk from "chalk";
 import figlet from "figlet";
 import { Command } from "commander";
-import { esm } from "@console/node";
-import { Is, AnyFunction } from "@console/validation";
+import { esm } from "@typesys/node";
+import { Is, AnyFunction } from "@typesys/validation";
 
 // import project related modules.
 // eslint-disable-next-line import/no-cycle
