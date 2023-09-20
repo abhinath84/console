@@ -5,8 +5,8 @@
   "type": "module",
   "scripts": {
     "reset": "npm run clear:npm && npm run bootstrap",
-    "bootstrap": "npm i --legacy-peer-deps && npm run build",
-    "install:dev": "npm i --legacy-peer-deps",
+    "bootstrap": "npm i && npm run build",
+    "install:dev": "npm i",
     "install:prod": "npm i --legacy-peer-deps --omit=dev",
     "prebuild": "npm run -ws prebuild",
     "build": "npx tsc --build",
