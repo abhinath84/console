@@ -1,6 +1,6 @@
 {
   "name": "@typesys/validation",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Type validation utility",
   "type": "module",
   "exports": {
@@ -24,6 +24,11 @@
     "docs:api": "npx typedoc --readme none --out ./docs/api/html",
     "docs:api:md": "npx typedoc --plugin typedoc-plugin-markdown --readme none --out ./docs/api/md"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/abhinath84/console/tree/main/packages/validation"
+  },
+  "homepage": "https://github.com/abhinath84/console/tree/main/packages/validation",
   "bugs": {
     "url": "https://github.com/abhinath84/console/issues/new"
   },
