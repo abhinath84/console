@@ -63,6 +63,9 @@
     "typedoc-plugin-markdown": "^3.16.0",
     "typescript": "^5.2.0"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "bugs": {
     "url": "https://github.com/abhinath84/console/issues/new"
   }

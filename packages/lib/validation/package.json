@@ -24,6 +24,9 @@
     "docs:api": "npx typedoc --readme none --out ./docs/api/html",
     "docs:api:md": "npx typedoc --plugin typedoc-plugin-markdown --readme none --out ./docs/api/md"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/abhinath84/console/tree/main/packages/validation"

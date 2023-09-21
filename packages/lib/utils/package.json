@@ -29,6 +29,9 @@
     "log4js": "^6.9.1",
     "uuid": "^9.0.0"
   },
+  "engines": {
+    "node": ">=18"
+  },
   "repository": {
     "type": "git",
     "url": "https://github.com/abhinath84/console/tree/main/packages/utils"
