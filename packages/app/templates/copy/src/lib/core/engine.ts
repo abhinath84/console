@@ -3,15 +3,16 @@ import path from "path";
 import chalk from "chalk";
 import figlet from "figlet";
 import { Command } from "commander";
+import { esm, display } from "@typesys/node";
+import { Is, AnyFunction } from "@typesys/validation";
 
 // import project related modules.
 // eslint-disable-next-line import/no-cycle
 import { parseProgram } from "./commands.js";
 import { Utils } from "../utils/utility.js";
 import { errorHandler } from "./errors.js";
-import { loadModule } from "../utils/esm.js";
 
-const __dirname = Utils.dirname(import.meta.url);
+const __dirname = esm.dirname(import.meta.url);
 const cmdDirs = path.join(__dirname, "../cmd");
 const pkg = Utils.packageJson();
 
@@ -33,21 +34,22 @@ export const engine: Engine = {
 };
 
 function showFiglet() {
-  // clear();
-  // TODO: pad according to shell window width.
-  const figletText = figlet.textSync(`   ${pkg.name.toUpperCase()}`, { horizontalLayout: "full" });
-  Utils.display(chalk.cyan(`${figletText}v${engine.version}`));
-  Utils.display("\n");
+  const name = Object.keys(pkg.bin)[0] || pkg.name;
+  const figletText = figlet.textSync(`   ${name.toUpperCase()}`, { horizontalLayout: "full" });
+  display(chalk.cyan(`${figletText}v${engine.version}`));
+  display("\n");
 }
 
-// TODO: replace value: any to value: Object|Function
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-function register(parent: any, child: any, cmd: string): void {
-  if (Object.prototype.toString.call(child) === "[object Function]" || typeof child === "function") {
+function register(
+  parent: Record<string, AnyFunction>,
+  child: Record<string, AnyFunction>|AnyFunction,
+  cmd: string,
+): void {
+  if (Is.function(child)) {
     parent[cmd] = child; // eslint-disable-line no-param-reassign
-  } else if (Object(child) === child) {
+  } else if (Is.object(child)) {
     Object.keys(child).forEach((key) => {
-      if (Object.prototype.toString.call(child[key]) === "[object Function]" || typeof child[key] === "function") {
+      if (Is.function(child[key])) {
         parent[key] = child[key]; // eslint-disable-line no-param-reassign
       }
     });
@@ -59,7 +61,7 @@ function loadCmds(files: string[]): Promise<boolean> {
     const jsFiles = files.filter((file) => file.match(/(.*)\.js$/));
 
     // load modules
-    const promises = jsFiles.map((jsFile) => loadModule(path.resolve(cmdDirs, jsFile)).then((module) => ({
+    const promises = jsFiles.map((jsFile) => esm.load(path.resolve(cmdDirs, jsFile)).then((module) => ({
       cmd: jsFile.match(/(.*)\.js$/)![1], // eslint-disable-line @typescript-eslint/no-non-null-assertion
       mod: module,
     })));
@@ -108,8 +110,6 @@ function parseCallback(): Command {
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 function actionCallback(cmd: string, ...args: any[]): void {
-  // showFiglet();
-
   // check
   if (cli[cmd]) {
     cli[cmd].apply(null, [...args]).catch(errorHandler);

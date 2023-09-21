@@ -1,10 +1,4 @@
-"use strict";
-
 import log from "npmlog";
-// import { createRequire } from "module";
-
-// const require = createRequire(import.meta.url);
-// const pkg = require("../../../package.json");
 
 import { Utils } from "../utils/utility.js";
 

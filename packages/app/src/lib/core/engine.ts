@@ -3,7 +3,7 @@ import path from "path";
 import chalk from "chalk";
 import figlet from "figlet";
 import { Command } from "commander";
-import { esm } from "@typesys/node";
+import { esm, display } from "@typesys/node";
 import { Is, AnyFunction } from "@typesys/validation";
 
 // import project related modules.
@@ -12,7 +12,7 @@ import { parseProgram } from "./commands.js";
 import { Utils } from "../utils/utility.js";
 import { errorHandler } from "./errors.js";
 
-const __dirname = Utils.dirname(import.meta.url);
+const __dirname = esm.dirname(import.meta.url);
 const cmdDirs = path.join(__dirname, "../cmd");
 const pkg = Utils.packageJson();
 
@@ -36,8 +36,8 @@ export const engine: Engine = {
 function showFiglet() {
   const name = Object.keys(pkg.bin)[0] || pkg.name;
   const figletText = figlet.textSync(`   ${name.toUpperCase()}`, { horizontalLayout: "full" });
-  Utils.display(chalk.cyan(`${figletText}v${engine.version}`));
-  Utils.display("\n");
+  display(chalk.cyan(`${figletText}v${engine.version}`));
+  display("\n");
 }
 
 function register(

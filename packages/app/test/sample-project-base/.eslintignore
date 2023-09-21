@@ -1,8 +1,0 @@
-# system file/folder
-node_modules/*
-
-# auto generated files
-dist/*
-
-# misc
-jsdoc/*

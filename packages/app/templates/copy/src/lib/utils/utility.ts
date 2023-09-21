@@ -1,54 +1,11 @@
-"use strict";
-
-import path from "path";
-import { fileURLToPath } from "url";
 import { createRequire } from "module";
-import { accessSync, constants } from "fs";
 
 // import pkg from "../../../package.json" assert {type: "json"};
 
 const require = createRequire(import.meta.url);
 const pkg = require("../../../package.json");
 
-function accessible(dir: string, mode: number) {
-  let state = false;
-
-  if (dir.length > 0) {
-    // state = true;
-
-    try {
-      accessSync(dir, mode);
-      state = true;
-    } catch (err) {
-      state = false;
-    }
-  }
-
-  return state;
-}
-
-const FilesystemStream = {
-  writable(sharedPath: string): boolean {
-    return accessible(sharedPath, constants.W_OK);
-  },
-  readable(sharedPath: string): boolean {
-    return accessible(sharedPath, constants.R_OK);
-  }
-};
-
 const Utils = {
-  /**
-   * Capitalize the First letter of the input string.
-   *
-   * @param {string} origin The string to capitalize
-   * @returns string  Capitalized string
-   */
-  capitalizeFirstLetter([first, ...rest]: string): string {
-    const locale = Intl.DateTimeFormat().resolvedOptions().locale;
-    return first.toLocaleUpperCase(locale) + rest.join("");
-
-    // return first.toUpperCase() + rest.join("");
-  },
   /**
    * Find all the occurrences of {@link search} string and replace them with {@link replace} string.
    *
@@ -60,56 +17,8 @@ const Utils = {
   replaceAll(origin: string, search: string, replace: string): string {
     return origin.split(search).join(replace);
   },
-  /**
-   * Find all the occurrence of key contained template string
-   * of following format in the passing original string &
-   * put replace string on them.
-   *
-   * format: __{{key}}__
-   *
-   * @param {string} original The string to format
-   * @param {string} key The key which need to format
-   * @param {string} replace The replace string
-   * @returns {string} Formatted string.
-   */
-  format(original: string, key: string, replace: string): string {
-    const tmp = `__{{${key}}}__`;
-
-    return this.replaceAll(original, tmp, replace);
-  },
-  /**
-   * Replica of __filename variable. It'll be used when building
-   * nodejs app using ES6 module style, as __filename is not define in
-   * case of ES6 module style.
-   *
-   * @param {string} url provide `import.meta.url` as url.
-   *
-   * @returns {string} current file name with full-path.
-   */
-  filename(url: string): string {
-    return fileURLToPath(url);
-  },
-  /**
-   * Replica of __dirname variable. It'll be used when building
-   * nodejs app using ES6 module style, as __dirname is not define in
-   * case of ES6 module style.
-   *
-   * @param {string} url provide `import.meta.url` as url.
-   *
-   * @returns {string} current directory path.
-   */
-  dirname(url: string): string {
-    const name = path.dirname(this.filename(url));
-    return name;
-  },
   packageJson() {
     return pkg;
-  },
-  getEnv(name: string): string | undefined {
-    if (name && name.length > 0) {
-      return process.env[name];
-    }
-    return undefined;
   },
   cmdUsageHelpMsg(name: string): string {
     if (name) {
@@ -118,6 +27,7 @@ $ ${pkg.name} help ${name}`;
     }
     return "";
   },
+  // TODO: delete this method before publish
   formatToHMS(milliseconds: number): { hr: number; min: number; sec: number; msec: number } {
     let seconds = Math.floor(milliseconds / 1000);
     const msec = milliseconds % 1000;
@@ -137,15 +47,9 @@ $ ${pkg.name} help ${name}`;
     hours %= 24;
 
     return {
-      hr: hours, min: minutes, sec: seconds, msec
+      hr: hours, min: minutes, sec: seconds, msec,
     };
-  },
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  display(message?: any, ...optionalParams: any[]): void {
-    console.log(message, ...optionalParams); // eslint-disable-line no-console
-  },
-  require,
-  FilesystemStream,
+  }
 };
 
 export { Utils };

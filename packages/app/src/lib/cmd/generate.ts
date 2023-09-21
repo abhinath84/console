@@ -3,14 +3,13 @@ import { access, constants } from "fs/promises";
 import inquirer, { QuestionCollection } from "inquirer";
 import chalk from "chalk";
 import {
-  exists, writable, writeLine
+  esm, exists, writable, writeLine
 } from "@typesys/node";
 
 import { UsageError } from "../core/errors.js";
-import { Utils } from "../utils/utility.js";
 import { GenerateInput, Generator } from "../assist/generator.js";
 
-const isValidSPDX = Utils.require("spdx-expression-validate");
+const isValidSPDX = esm.require("spdx-expression-validate");
 
 function validateProjectName(name: string): boolean {
   const invalidChars = ["\\", "/", ":", "*", "?", "\"", "<", ">", "|", " "];

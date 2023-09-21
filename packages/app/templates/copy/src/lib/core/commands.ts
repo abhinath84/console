@@ -1,7 +1,5 @@
-// import standard & node_modules
 import { Command } from "commander";
 
-// import project modules
 // eslint-disable-next-line import/no-cycle
 import { engine } from "./engine.js";
 import { Utils } from "../utils/utility.js";

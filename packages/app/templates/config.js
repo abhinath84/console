@@ -1,7 +1,16 @@
 export const questions = [];
 
 export const install = {
-  dependencies: ["chalk", "commander", "figlet", "inquirer", "npmlog"],
+  dependencies: [
+    "@typesys/node",
+    "@typesys/utils",
+    "@typesys/validation",
+    "chalk",
+    "commander",
+    "figlet",
+    "inquirer",
+    "npmlog"
+  ],
   devDependencies: [
     "@types/figlet",
     "@types/inquirer",
@@ -10,9 +19,9 @@ export const install = {
     "@typescript-eslint/eslint-plugin",
     "@typescript-eslint/parser",
     "copyfiles",
+    "rimraf",
     "eslint",
     "eslint-config-airbnb-base",
-    "eslint-formatter-gitlab",
     "eslint-plugin-import",
     "tslib",
     "typescript"

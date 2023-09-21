@@ -1,7 +1,5 @@
 #!/usr/bin/env node
 
-"use strict";
-
 import { engine } from "../lib/core/engine.js";
 import { errorHandler } from "../lib/core/errors.js";
 

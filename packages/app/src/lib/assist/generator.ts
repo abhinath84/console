@@ -19,11 +19,10 @@ import {
 } from "@typesys/node";
 import { TObject, Assert } from "@typesys/validation";
 
-import { Utils } from "../utils/utility.js";
 import { UsageError } from "../core/errors.js";
 import * as Handlebars from "../utils/handlebars.js";
 
-const __dirname = Utils.dirname(import.meta.url);
+const __dirname = esm.dirname(import.meta.url);
 
 export type GenerateInput = {
   path: string;

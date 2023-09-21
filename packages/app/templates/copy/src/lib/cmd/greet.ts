@@ -1,6 +1,10 @@
-import { GreetInput } from "../core/defs.js";
+import { display } from "@typesys/node";
 import { UsageError } from "../core/errors.js";
-import { Utils } from "../utils/utility.js";
+
+export type GreetInput = {
+  name: string;
+  note: string;
+};
 
 function validateOption(input: GreetInput): string[] {
   const msgs: string[] = [];
@@ -35,9 +39,9 @@ const cli = async (name: string, options: { note: string }): Promise<void> => {
 
   // call api
   const greeting = await api(input);
-  Utils.display("");
-  Utils.display(greeting);
-  Utils.display("");
+  display("");
+  display(greeting);
+  display("");
 
   return (Promise.resolve());
 };
