@@ -13,7 +13,7 @@
     "declaration": true,
     "noImplicitAny": true,
     "alwaysStrict": true,
-    "sourceMap": true,
+    "sourceMap": false,
     "esModuleInterop": true,
     // "emitDecoratorMetadata": true,
     // "experimentalDecorators": true,
