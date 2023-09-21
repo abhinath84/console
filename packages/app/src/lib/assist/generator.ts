@@ -164,9 +164,6 @@ export class Generator {
     const src = path.join(this.#template, "copy");
     const dest = path.join(this.#generateInput.path, this.#generateInput.package.name);
 
-    // await fse.access(path.dirname(dest), fse.constants.R_OK);
-    // await fse.copy(src, dest);
-
     const fileCopyCB = (source: string, destination: string, error: Error | null): void => {
       if (error === null) this.#writeCreateMsg(destination);
     };
@@ -179,16 +176,13 @@ export class Generator {
     Assert.defined(this.#generateInput, "Generator::Invalid input handler");
 
     const src = path.join(this.#template, "hbs");
-    // const dest = path.join(this.#generateInput.path, this.#generateInput.name);
-
-    // // collect all files under 'hbs' directory in an array format.
     const fileList = await files(src, { recursive: true });
 
     // create destination file out of them.
     const promises = fileList.map((file) => this.#compile(file));
     await Promise.all(promises);
 
-    return (Promise.resolve());
+    // return (Promise.resolve());
   }
 
   async #npm(): Promise<void> {
