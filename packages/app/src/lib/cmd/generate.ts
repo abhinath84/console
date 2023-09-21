@@ -104,24 +104,6 @@ type InputQuestion = {
 };
 
 function ask(project: string) {
-  // {
-  //   type: "input",
-  //   name: "package_name",
-  //   message: "package name: ",
-  //   validate(value: Answers) {
-  //     // check for empty string
-  //     if (value.length > 0) {
-  //       return true;
-  //     }
-
-  //     // TODO: how to verify proper hostname
-  //     return "Please enter package name";
-  //   },
-  //   default() {
-  //     return (project);
-  //   }
-  // },
-
   writeLine("");
 
   const questions: QuestionCollection<InputQuestion> = [
@@ -232,7 +214,6 @@ function ask(project: string) {
       },
     },
   ];
-
   return inquirer.prompt(questions);
 }
 
