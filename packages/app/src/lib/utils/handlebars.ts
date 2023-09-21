@@ -3,6 +3,7 @@ import { existsSync } from "fs";
 import * as fsp from "fs/promises";
 import Handlebars from "handlebars";
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export async function compile(file: string, input: any) {
   if (existsSync(file)) {
     const hbs = Handlebars.create();

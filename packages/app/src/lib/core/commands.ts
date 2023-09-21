@@ -31,12 +31,12 @@ program
   )
   .action((name, options) => engine.action("generate", name, options));
 
-program
-  .command("command")
-  .alias("cmd")
-  .description("Add new command with minimal structure")
-  .option("--json", "command.json file path")
-  .action((options) => engine.action("command", options));
+// program
+//   .command("command")
+//   .alias("cmd")
+//   .description("Add new command with minimal structure")
+//   .option("--json", "command.json file path")
+//   .action((options) => engine.action("command", options));
 
 export function parseProgram() {
   return (program.parse(process.argv));

@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build:
@@ -21,9 +24,10 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-  publish:
-    needs:
-      - build
+      - name: Build
+        run: npm run build
+
+  lint:
     runs-on: ubuntu-latest
 
     steps:
@@ -34,9 +38,29 @@ jobs:
         uses: actions/setup-node@v3
         with:
           node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
 
-      - name: Publish to NPM
-        run: npm publish --workspaces --access public
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+      - name: Install dependencies
+        run: npm install
+
+      - name: Running Lint
+        run: npm run lint
+
+  # publish:
+  #   needs:
+  #     - build
+  #   runs-on: ubuntu-latest
+
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v4
+
+  #     - name: Set up Node.js
+  #       uses: actions/setup-node@v3
+  #       with:
+  #         node-version: '18.x'
+  #         registry-url: 'https://registry.npmjs.org'
+
+  #     - name: Publish to NPM
+  #       run: npm publish --workspaces --access public
+  #       env:
+  #         NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}

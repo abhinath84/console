@@ -108,21 +108,21 @@ export class Generator {
     await this.#gitInit();
   }
 
-  async command(input: CommandInput): Promise<void> {
-    // validate existing project.
-    //  - folder structure (minimal & required)
-    //  - file structure (minimal & required)
+  // async command(input: CommandInput): Promise<void> {
+  //   // validate existing project.
+  //   //  - folder structure (minimal & required)
+  //   //  - file structure (minimal & required)
 
-    // parse core/commands.ts
-    // append new command into this file
-    const newCommands = this.getNewCommands(input.commands);
+  //   // parse core/commands.ts
+  //   // append new command into this file
+  //   const newCommands = this.getNewCommands(input.commands);
 
-    // add [cli, api] methods in 'cmd/' existing file or new file.
+  //   // add [cli, api] methods in 'cmd/' existing file or new file.
 
-    // add file in 'assist' folder.
+  //   // add file in 'assist' folder.
 
-    return (Promise.resolve());
-  }
+  //   return (Promise.resolve());
+  // }
 
   async #config() {
     const dest = path.join(this.#template, "config.js");
@@ -169,7 +169,7 @@ export class Generator {
     // await fse.copy(src, dest);
 
     const fileCopyCB = (source: string, destination: string, error: Error | null): void => {
-      this.#writeCreateMsg(destination);
+      if (error === null) this.#writeCreateMsg(destination);
     };
     await copy(src, dest, fileCopyCB);
 
@@ -444,13 +444,13 @@ export class Generator {
     return (obj);
   }
 
-  private getNewCommands(commands: CommandArgument[]): string {
-    const newCommands = "";
+  // private getNewCommands(commands: CommandArgument[]): string {
+  //   const newCommands = "";
 
-    commands.forEach((element) => {
-      // use hbs to create this string.
-    });
+  //   commands.forEach((element) => {
+  //     // use hbs to create this string.
+  //   });
 
-    return ("");
-  }
+  //   return ("");
+  // }
 }
