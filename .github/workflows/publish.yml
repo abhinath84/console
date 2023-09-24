@@ -2,9 +2,40 @@ name: Publish
 
 on:
   workflow_dispatch:
+    inputs:
+      job-to-run:
+        description: 'Select the job to run'
+        required: true
+        default: 'publish-all'
+        options:
+          - publish-all
+          - publish-console
+          - publish-lib-node
+          - publish-lib-utils
+          - publish-lib-validation
 
 jobs:
-  publish:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
+  publish-all:
+    needs:
+      - build
     runs-on: ubuntu-latest
 
     steps:
@@ -17,13 +48,95 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
 
-      - name: Install dependencies
-        run: npm install
-
-      - name: Build
-        run: npm run build
-
       - name: Publish to NPM
         run: npm publish --workspaces --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+  publish-console:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to NPM
+        run: |
+          cd ./packages/app |
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+  publish-lib-node:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to NPM
+        run: |
+          cd ./packages/lib/node |
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+  publish-lib-utils:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to NPM
+        run: |
+          cd ./packages/lib/utils |
+          npm publish --access public
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+
+  publish-lib-validation:
+    needs:
+      - build
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
+      - name: Publish to NPM
+        run: |
+          cd ./packages/lib/validation |
+          npm publish --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
