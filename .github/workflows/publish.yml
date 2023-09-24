@@ -28,36 +28,33 @@ jobs:
         with:
           node-version: '18.x'
 
+  publish-all:
+    if: ${{ github.event.inputs.run == 'all' }}
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: '18.x'
+          registry-url: 'https://registry.npmjs.org'
+
       - name: Install dependencies
         run: npm install
 
       - name: Build
         run: npm run build
 
-  publish-all:
-    needs:
-      - build
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-          registry-url: 'https://registry.npmjs.org'
-
       - name: Publish to NPM
         run: npm publish --workspaces --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        if: ${{ github.event.inputs.run == 'all' }}
 
   publish-console:
-    needs:
-      - build
+    if: ${{ github.event.inputs.run == 'console' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -69,16 +66,20 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
 
       - name: Publish to NPM
         run: npm publish -w packages/app --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        if: ${{ github.event.inputs.run == 'console' }}
 
   publish-lib-node:
-    needs:
-      - build
+    if: ${{ github.event.inputs.run == 'node' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -90,16 +91,20 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
 
       - name: Publish to NPM
         run: npm publish -w packages/lib/node --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        if: ${{ github.event.inputs.run == 'node' }}
 
   publish-lib-utils:
-    needs:
-      - build
+    if: ${{ github.event.inputs.run == 'utils' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -111,16 +116,20 @@ jobs:
         with:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
 
       - name: Publish to NPM
         run: npm publish -w packages/lib/utils --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        if: ${{ github.event.inputs.run == 'utils' }}
 
   publish-lib-validation:
-    needs:
-      - build
+    if: ${{ github.event.inputs.run == 'validation' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -133,8 +142,13 @@ jobs:
           node-version: '18.x'
           registry-url: 'https://registry.npmjs.org'
 
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build
+        run: npm run build
+
       - name: Publish to NPM
         run: npm publish -w packages/lib/validation --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
-        if: ${{ github.event.inputs.run == 'validation' }}
