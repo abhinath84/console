@@ -1,21 +1,19 @@
 name: Publish
 
 on:
-  workflow_dispatch
-  
-  # workflow_dispatch:
-  #   inputs:
-  #     job-to-run:
-  #       description: 'Select the job to run'
-  #       required: true
-  #       type: choice
-  #       default: 'publish-all'
-  #       options:
-  #         - publish-all
-  #         - publish-console
-  #         - publish-lib-node
-  #         - publish-lib-utils
-  #         - publish-lib-validation
+  workflow_dispatch:
+    inputs:
+      run:
+        description: 'Select the job to run'
+        required: true
+        type: choice
+        default: 'all'
+        options:
+          - all
+          - console
+          - node
+          - utils
+          - validation
 
 jobs:
   build:
@@ -55,6 +53,7 @@ jobs:
         run: npm publish --workspaces --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        if: ${{ github.event.inputs.run == 'all' }}
 
   publish-console:
     needs:
@@ -75,6 +74,7 @@ jobs:
         run: npm publish -w packages/app --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        if: ${{ github.event.inputs.run == 'console' }}
 
   publish-lib-node:
     needs:
@@ -95,6 +95,7 @@ jobs:
         run: npm publish -w packages/lib/node --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        if: ${{ github.event.inputs.run == 'node' }}
 
   publish-lib-utils:
     needs:
@@ -115,6 +116,7 @@ jobs:
         run: npm publish -w packages/lib/utils --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        if: ${{ github.event.inputs.run == 'utils' }}
 
   publish-lib-validation:
     needs:
@@ -135,3 +137,4 @@ jobs:
         run: npm publish -w packages/lib/validation --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
+        if: ${{ github.event.inputs.run == 'validation' }}
