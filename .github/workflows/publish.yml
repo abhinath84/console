@@ -1,18 +1,21 @@
 name: Publish
 
 on:
-  workflow_dispatch:
-    inputs:
-      job-to-run:
-        description: 'Select the job to run'
-        required: true
-        default: 'publish-all'
-        options:
-          - publish-all
-          - publish-console
-          - publish-lib-node
-          - publish-lib-utils
-          - publish-lib-validation
+  workflow_dispatch
+  
+  # workflow_dispatch:
+  #   inputs:
+  #     job-to-run:
+  #       description: 'Select the job to run'
+  #       required: true
+  #       type: choice
+  #       default: 'publish-all'
+  #       options:
+  #         - publish-all
+  #         - publish-console
+  #         - publish-lib-node
+  #         - publish-lib-utils
+  #         - publish-lib-validation
 
 jobs:
   build:
