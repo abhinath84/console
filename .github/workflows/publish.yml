@@ -69,9 +69,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to NPM
-        run: |
-          cd ./packages/app |
-          npm publish --access public
+        run: npm publish -w packages/app --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -91,9 +89,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to NPM
-        run: |
-          cd ./packages/lib/node |
-          npm publish --access public
+        run: npm publish -w packages/lib/node --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -113,9 +109,7 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to NPM
-        run: |
-          cd ./packages/lib/utils |
-          npm publish --access public
+        run: npm publish -w packages/lib/utils --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
@@ -135,8 +129,6 @@ jobs:
           registry-url: 'https://registry.npmjs.org'
 
       - name: Publish to NPM
-        run: |
-          cd ./packages/lib/validation |
-          npm publish --access public
+        run: npm publish -w packages/lib/validation --access public
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
