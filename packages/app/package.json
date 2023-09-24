@@ -1,6 +1,6 @@
 {
   "name": "@typesys/console",
-  "version": "1.3.4",
+  "version": "1.3.5",
   "description": "Generate project to implement command-line interface application",
   "type": "module",
   "preferGlobal": true,

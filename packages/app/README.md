@@ -31,15 +31,15 @@ npm install @typesys/console
 - Create new workspace in current working directory:
 
 ```sh
-console generate <cli-app-name>
-console gen <cli-app-name>
+console new <cli-app-name>
+console n <cli-app-name>
 ```
 
 - Create new workspace in current working directory:
 
 ```sh
-console generate <cli-app-name> --path <destination-directory>
-console gen <cli-app-name> -p <destination-directory>
+console new <cli-app-name> --path <destination-directory>
+console n <cli-app-name> -p <destination-directory>
 ```
 
 ### API
@@ -60,7 +60,7 @@ engine.load().then(() => {
     }
   };
 
-  engine.commands.generate(input).then(() => console.log("Created !!!"));
+  engine.commands.new(input).then(() => console.log("Created !!!"));
 });
 ```
 
