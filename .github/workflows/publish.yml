@@ -7,7 +7,7 @@ on:
         description: 'Select the job to run'
         required: true
         type: choice
-        default: 'all'
+        default: 'console'
         options:
           - all
           - console
