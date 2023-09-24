@@ -1,5 +1,8 @@
 {
   "editor.formatOnSave": true,
   "editor.formatOnSaveMode": "file",
-  "markdown.extension.toc.updateOnSave": false
+  "[markdown]": {
+      "editor.formatOnSave": true
+  },
+  "markdown.extension.toc.updateOnSave": true,
 }

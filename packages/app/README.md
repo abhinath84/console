@@ -13,7 +13,7 @@ Application to generate workspace to implement Command Line Interface (CLI) appl
 - [Quick Start](#quick-start)
   - [CLI](#cli)
   - [API](#api)
-
+- [Commands](#commands)
 
 ## Installation
 
@@ -22,7 +22,7 @@ npm install -g @typesys/console
 npm install @typesys/console
 ```
 
-**Warning:** This package is native [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and no longer provides a CommonJS export. If your project uses CommonJS, you will have to *convert to ESM* or use the [dynamic `import()`](https://v8.dev/features/dynamic-import) function. Please don't open issues for questions regarding CommonJS / ESM.
+**Warning:** This package is native [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and no longer provides a CommonJS export. If your project uses CommonJS, you will have to _convert to ESM_ or use the [dynamic `import()`](https://v8.dev/features/dynamic-import) function. Please don't open issues for questions regarding CommonJS / ESM.
 
 ## Quick Start
 
@@ -31,36 +31,45 @@ npm install @typesys/console
 - Create new workspace in current working directory:
 
 ```sh
-npm console generate <cli-app-name>
-npm console gen <cli-app-name>
+console generate <cli-app-name>
+console gen <cli-app-name>
 ```
 
 - Create new workspace in current working directory:
 
 ```sh
-npm console generate <cli-app-name> --path <destination-directory>
-npm console gen <cli-app-name> -p <destination-directory>
+console generate <cli-app-name> --path <destination-directory>
+console gen <cli-app-name> -p <destination-directory>
 ```
 
 ### API
 
-Console comes with an easy to use composable API which help you to generate cli workspace from your javascript/typescript.
+_console_ comes with an easy to use composable API which help you to generate cli workspace from your javascript/typescript.
 
 ```ts
 import { engine } from "@typesys/console";
 
-engine.load()
-  .then(() => {
-    // create new workspace
-    const input = {
-      name: "cli-ws",
-      path: "C:/console/",
-      config: {
-        npm: true,
-        git: true
-      }
-    };
+engine.load().then(() => {
+  // create new workspace
+  const input = {
+    name: "cli-ws",
+    path: "C:/console/",
+    config: {
+      npm: true,
+      git: true
+    }
+  };
 
-    engine.commands.generate(input).then(() => console.log("Created !!!"));
-  });
+  engine.commands.generate(input).then(() => console.log("Created !!!"));
+});
 ```
+
+<!-- Provide typedoc generate page link here -->
+
+## Commands
+
+| name                          | Description                     |
+| :---------------------------- | :------------------------------ |
+| [new](./docs/commands/new.md) | Creates a new CLI app workspace |
+
+<!-- ## References -->
