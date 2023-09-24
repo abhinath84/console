@@ -16,19 +16,7 @@ on:
           - validation
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v3
-        with:
-          node-version: '18.x'
-
-  publish-all:
+  all:
     if: ${{ github.event.inputs.run == 'all' }}
     runs-on: ubuntu-latest
 
@@ -53,7 +41,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-  publish-console:
+  console:
     if: ${{ github.event.inputs.run == 'console' }}
     runs-on: ubuntu-latest
 
@@ -78,7 +66,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-  publish-lib-node:
+  lib-node:
     if: ${{ github.event.inputs.run == 'node' }}
     runs-on: ubuntu-latest
 
@@ -103,7 +91,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-  publish-lib-utils:
+  lib-utils:
     if: ${{ github.event.inputs.run == 'utils' }}
     runs-on: ubuntu-latest
 
@@ -128,7 +116,7 @@ jobs:
         env:
           NODE_AUTH_TOKEN: ${{ secrets.NPM_AUTH_TOKEN }}
 
-  publish-lib-validation:
+  lib-validation:
     if: ${{ github.event.inputs.run == 'validation' }}
     runs-on: ubuntu-latest
 
