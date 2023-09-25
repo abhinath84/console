@@ -224,6 +224,8 @@ const cli = async (name: string, options: { yes: boolean }): Promise<void> => {
 export { api, cli };
 ```
 
+- [Build](#build) the application.
+
 Successfully added new command `help` to the application.
 
 <!-- ## References -->
