@@ -91,6 +91,7 @@ engine.load().then(() => {
 
 below is the generated workspace structure:
 
+```
 📦cli-app
 ┣ 📂node_modules
 ┣ 📂src
@@ -113,6 +114,7 @@ below is the generated workspace structure:
 ┣ 📜package-lock.json
 ┣ 📜package.json
 ┗ 📜tsconfig.json
+```
 
 | Script(s)                  | Description                                                              |
 | :------------------------- | :----------------------------------------------------------------------- |
