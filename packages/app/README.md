@@ -45,25 +45,25 @@ npm install @typesys/console
 
 ### CLI
 
-- Create new workspace in current working directory:
+- Create new workspace with name `cli-ws` in current working directory:
 
 ```sh
-console new <cli-app-name>
-console n <cli-app-name>
+console new <cli-ws>
+console n <cli-ws>
 ```
 
-- Create new workspace in custom directory:
+- Create new workspace with name `cli-ws` in custom directory:
 
 ```sh
-console new <cli-app-name> --path <custom-path>
-console n <cli-app-name> -p <custom-path>
+console new <cli-ws> --path <custom-path>
+console n <cli-ws> -p <custom-path>
 ```
 
 ### API
 
 _console_ comes with an easy to use composable API which help you to generate cli workspace from your javascript/typescript.
 
-- Create new workspace in custom directory:
+- Create new workspace with name `cli-ws` in custom directory:
 
 ```ts
 import { engine } from "@typesys/console";
