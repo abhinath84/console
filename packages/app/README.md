@@ -13,8 +13,8 @@ Console generate workspace to implement Command Line Interface (CLI) application
 
 > Need to have understanding of _node.js_ supports for CLI as content of the generated scripts in the workspace are used api provided by node.js for CLI.
 
-- [Installation](#installation)
 - [Benefits](#benefits)
+- [Installation](#installation)
 - [Usage](#usage)
   - [CLI](#cli)
   - [API](#api)
@@ -26,6 +26,13 @@ Console generate workspace to implement Command Line Interface (CLI) application
   - [Run](#run)
   - [Add new command](#add-new-command)
 
+## Benefits
+
+- Access command in CLI & API form.
+- Centralized error handling system.
+- Easily add/remove commands.
+- Robust structure.
+
 ## Installation
 
 ```sh
@@ -34,12 +41,6 @@ npm install @typesys/console
 ```
 
 **Warning:** This package is native [ESM](https://developer.mozilla.org/en-US/docs/Web/JavaScript/Guide/Modules) and no longer provides a CommonJS export. If your project uses CommonJS, you will have to _convert to ESM_ or use the [dynamic `import()`](https://v8.dev/features/dynamic-import) function. Please don't open issues for questions regarding CommonJS / ESM.
-
-## Benefits
-
-- Single package hold same feature in CLI & API form.
-- Centralized error handling system.
-- Easy to add/remove commands.
 
 ## Usage
 
