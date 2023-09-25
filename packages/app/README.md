@@ -172,7 +172,7 @@ OR
 
 workspace use `commander` npm package to look after parsing the arguments into options and command-arguments, displays usage errors for problems, and implements a help system.
 
-Below steps will add a new command `help` in the workspace, you can follow the same steps to add your new command and modify corresponding fields.
+Below steps will add a new command `help` in the workspace, **you can follow the same steps to add your new command** and modify corresponding fields.
 
 - Open `./src/lib/core/commands.ts` file in code editor.
 - Register `help` command by adding a new entry in `program` object and expand it based on your requirement.
