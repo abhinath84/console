@@ -68,8 +68,8 @@ engine.load().then(() => {
 
 ## Commands
 
-| name                          | Description                     |
-| :---------------------------- | :------------------------------ |
-| [new](./docs/commands/new.md) | Creates a new CLI app workspace |
+| name                                      | Description                     |
+| :---------------------------------------- | :------------------------------ |
+| [new](/packages/app/docs/commands/new.md) | Creates a new CLI app workspace |
 
 <!-- ## References -->
