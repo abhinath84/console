@@ -37,7 +37,11 @@ function errorHandler(err: Error): void {
     log.error("", "");
     log.error("", "");
     log.error("", `${pkg.name}: `, pkg.version, "node:", process.version);
-    log.error("", `please open an issue including this log on ${pkg.bugs.url}`);
+    if (pkg.bugs.url && pkg.bugs.url.length > 0) {
+      log.error("", `please open an issue including this log on ${pkg.bugs.url}`);
+    } else {
+      log.error("", "please open an issue including this log");
+    }
   } else {
     log.error("", err.message);
   }

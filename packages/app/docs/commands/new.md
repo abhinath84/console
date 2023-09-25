@@ -21,7 +21,7 @@ Command creates new CLI app workspace on current working directory or specific p
 ## OPTIONS
 
 _-y, --yes_ \
-&emsp;Generate project with default options
+&emsp;Generate workspace with default options
 
 _-p, --path \<path>_ \
 &emsp;Path to create workspace
@@ -31,7 +31,7 @@ _-h, --help_ \
 
 ## EXAMPLES
 
--   Create `my-cli-app` cli app workspace on working directory.
+- Create `my-cli-app` cli app workspace on working directory.
 
 ```
   $ console new my-cli-app
@@ -39,7 +39,7 @@ _-h, --help_ \
   $ console n my-cli-app
 ```
 
--   Create `my-cli-app` cli app workspace on working directory with default options.
+- Create `my-cli-app` cli app workspace on working directory with default options.
 
 ```
   $ console new my-cli-app --yes
@@ -47,7 +47,7 @@ _-h, --help_ \
   $ console n my-cli-app -y
 ```
 
--   Create `my-cli-app` cli app workspace on custom directory `D:\console`.
+- Create `my-cli-app` cli app workspace on custom directory `D:\console`.
 
 ```
   $ console new my-cli-app --path "D:\console"
@@ -55,7 +55,7 @@ _-h, --help_ \
   $ console n my-cli-app -p "D:\console"
 ```
 
--   Create `my-cli-app` cli app workspace on custom directory `D:\console` with default options.
+- Create `my-cli-app` cli app workspace on custom directory `D:\console` with default options.
 
 ```
   $ console new my-cli-app --yes --path "D:\console"
