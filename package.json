@@ -15,7 +15,7 @@
     "lint:fix": "npx eslint --fix --max-warnings 0 .",
     "lint:w": "npx eslint --max-warnings 0",
     "lint:w:fix": "npx eslint --max-warnings 0 --fix",
-    "clear:npm": "npx rimraf ./package-lock.json && npx rimraf ./node_modules && npm run -ws clear:npm",
+    "clear:npm": "npx rimraf ./node_modules && npm run -ws clear:npm",
     "clear:build": "npm run -ws clear:build",
     "docs:api": "npm run -ws docs:api",
     "docs:api:md": "npm run -ws docs:api:md",
